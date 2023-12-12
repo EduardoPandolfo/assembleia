@@ -1,6 +1,7 @@
 package com.eduardokp.assembleia.services;
 
 import com.eduardokp.assembleia.config.ControleVotacaoPool;
+import com.eduardokp.assembleia.exceptions.EntityNotFoundException;
 import com.eduardokp.assembleia.model.dto.PautaDTO;
 import com.eduardokp.assembleia.model.dto.VotacaoDTO;
 import com.eduardokp.assembleia.model.entity.Pauta;
@@ -106,9 +107,16 @@ public class PautaService {
      * @param pautaId código da pauta
      * @return DTO com resultado da votação
      */
+    @SuppressWarnings({"unchecked"})
     public VotacaoDTO pesquisarResultadoPauta(Long pautaId) {
         Query query = em.createNativeQuery(QUERY_RESULTADO_PAUTA, VotacaoDTO.class);
         query.setParameter("pautaId", pautaId);
-        return (VotacaoDTO) query.getSingleResult();
+        List<VotacaoDTO> votos = query.getResultList();
+
+        if(votos.isEmpty()) {
+            throw new EntityNotFoundException(Pauta.class, pautaId);
+        }
+
+        return votos.get(0);
     }
 }
