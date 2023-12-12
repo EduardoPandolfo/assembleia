@@ -14,4 +14,6 @@ import java.util.List;
 @Repository
 public interface VotoRepository extends JpaRepository<Voto, Long> {
 
+    @Query("select v from Voto v where v.usuario.id = :usuarioId and v.pauta.id = :pautaId")
+    List<Voto> findByUsuarioIdAndPautaId(@Param("usuarioId") Long usuarioId, @Param("pautaId") Long pautaId);
 }
